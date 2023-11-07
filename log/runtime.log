@@ -1,0 +1,6 @@
+debug 2023/11/07 17:56:19  exec: "where avr-gcc": executable file not found in %PATH%
+debug 2023/11/07 17:58:45  exec: "echo %PATH%": executable file not found in %PATH%
+debug 2023/11/07 18:00:20 c:\Users\Thuan\Downloads\avr8-gnu-toolchain-3.7.0.1796-win32.any.x86_64\avr8-gnu-toolchain-win32_x86_64\bin\avr-gcc.exe
+ <nil>
+debug 2023/11/07 18:02:31 c:\Users\Thuan\Downloads\avr8-gnu-toolchain-3.7.0.1796-win32.any.x86_64\avr8-gnu-toolchain-win32_x86_64\bin\avr-gcc.exe
+ <nil>

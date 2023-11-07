@@ -1,18 +1,17 @@
 package models
 
 type AppInput struct {
-	question string
-	value    string
-	input    Input
-	index    uint
+	Question string
+	Value    string
+	Input    Input
 }
 
 func new(input string) AppInput {
-	return AppInput{question: input}
+	return AppInput{Question: input}
 }
 func NewTextField(input string) AppInput {
 	question := new(input)
 	model := newShortAnswerField()
-	question.input = model
+	question.Input = model
 	return question
 }

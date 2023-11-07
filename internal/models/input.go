@@ -24,11 +24,9 @@ type shortAnswerField struct {
 
 func newShortAnswerField() *shortAnswerField {
 	a := shortAnswerField{}
-
 	model := textinput.New()
 	model.Placeholder = "Type here..."
 	model.Focus()
-
 	a.textinput = model
 	return &a
 }

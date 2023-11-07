@@ -1,11 +1,11 @@
-package internal
+package misc
 
 type Template struct {
 	MCU       string //add on run - m328p if the board is arduino uno
 	FLAG      string
 	FILE      string
 	LINK_OPT  string
-	AD_CONF   string //add on run - your avrdud.conf location
+	AD_CONF   string //add on run - your avrdude.conf location
 	PROGRAMER string //add on run - your programmer - arduino if the board is arduino
 	PORT_NAME string //add on run - your port normally is COM3
 }
@@ -27,4 +27,4 @@ link:
 extract:
 	avr-objcopy -O ihex -R .eeprom $(FILE).elf $(FILE).ihex
 upload:
-	avrdude -C  -p m328p -c $(PROGRAMER) -b 19600 -P COM3 -U flash:w:$(FILE).ihex:i`
+	avrdude -p $(MCU) -c $(PROGRAMER) -b 19600 -P $(PORT_NAME) -U flash:w:$(FILE).ihex:i`

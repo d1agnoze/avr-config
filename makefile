@@ -4,7 +4,7 @@ build:
 	@@cd ./cmd/main; go build main.go
 	@@echo "build success"
 run:
-	@@clear;echo "starting app...."
+	@@echo "starting app...."
 	@@echo ----------------
 	@@cd ./cmd/main; ./main
 clean:

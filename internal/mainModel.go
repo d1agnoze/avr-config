@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"avr-config/cmd/avr-conf/internal/misc"
 	"avr-config/cmd/avr-conf/internal/models"
 	"time"
 
@@ -21,18 +22,21 @@ const (
 
 // * Main begin here!!!
 type Main struct {
-	progress progress.Model
-	stage    int //identifier for stages of the application
-	inputs   []models.AppInput
-	width int
-	height int
+	progress  progress.Model
+	stage     int //identifier for stages of the application
+	inputs    []models.AppInput
+	width     int
+	height    int
+	index     int
+	radio     models.Radio
+	keyParams misc.Template
 }
 
 func New(input []models.AppInput) *Main {
 	return &Main{
 		inputs:   input,
 		stage:    LOADING,
-		progress: progress.New(progress.WithGradient("#11998e","#38ef7d")),
+		progress: progress.New(progress.WithGradient("#11998e", "#38ef7d")),
 	}
 }
 
