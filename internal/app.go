@@ -29,6 +29,8 @@ func (m Main) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.progress.Width > ProgessBarMaxWidth {
 			m.progress.Width = ProgessBarMaxWidth
 		}
+		m.width = msg.Width
+		m.height = msg.Height
 		return m, nil
 	// ^ loop the loading screen
 	case TickMsg:
@@ -38,7 +40,7 @@ func (m Main) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// Note that you can also use progress.Model.SetPercent to set the
 		// percentage value explicitly, too.
-		cmd := m.progress.IncrPercent(2)
+		cmd := m.progress.IncrPercent(4)
 		return m, tea.Batch(TickCmd(), cmd)
 
 	// FrameMsg is sent when the progress bar wants to animate itself
@@ -54,10 +56,6 @@ func (m Main) View() string {
 	// The header
 	s := "\nPress q to quit.\n"
 	if m.stage == LOADING {
-		// pad := strings.Repeat(" ", ProgessBarPadding)
-		// return "\n" +
-		// 	pad + m.progress.View() + "\n" +
-		// 	pad + s
 		return misc.LoadingHandler(m.progress, ProgessBarPadding)
 	}
 	// Send the UI for rendering

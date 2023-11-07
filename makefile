@@ -1,11 +1,11 @@
 default:build run
 build:
+	@@echo "build starting"
 	@@cd ./cmd/main; go build main.go
 	@@echo "build success"
 run:
-	@@cls;echo "starting app...."
+	@@clear;echo "starting app...."
 	@@echo ----------------
-	@@cd ./cmd/main; ./main.exe
-	@@echo ----------------
+	@@cd ./cmd/main; ./main
 clean:
-	@@cd ./cmd/main;rm main.exe
+	@@cd ./cmd/main;rm main

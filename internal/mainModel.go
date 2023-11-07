@@ -24,13 +24,15 @@ type Main struct {
 	progress progress.Model
 	stage    int //identifier for stages of the application
 	inputs   []models.AppInput
+	width int
+	height int
 }
 
 func New(input []models.AppInput) *Main {
 	return &Main{
 		inputs:   input,
 		stage:    LOADING,
-		progress: progress.New(progress.WithDefaultGradient()),
+		progress: progress.New(progress.WithGradient("#11998e","#38ef7d")),
 	}
 }
 
