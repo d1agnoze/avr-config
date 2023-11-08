@@ -1,55 +1,39 @@
 package misc
 
 import (
-	"log"
+	"os"
 	"os/exec"
 	"runtime"
 	"strings"
-	"sync"
 )
 
-func Scan(wait *sync.WaitGroup) map[string]string {
-	defer wait.Done()
+func Scan() (map[string]string, error) {
 	res := make(map[string]string, 4)
-	var cmd, cmd2, sep, assumePath string
+	var cmd, sep string
 	if runtime.GOOS == "windows" {
 		cmd = "where"
+		sep = "\\"
 	} else {
 		cmd = "which"
+		sep = "/"
 	}
-	if out, err := exec.Command(cmd, "avr-gcc").Output(); err != nil && strings.Trim(string(out), " ") != "" {
+	if out, err := exec.Command(cmd, "avr-gcc").Output(); err == nil && strings.Trim(string(out), " ") != "" {
 		res["avr-gcc"] = string(out)
-	} else {
-		log.Println("ERRRO", err)
-	}
-	if out, err := exec.Command(cmd, "avrdude").Output(); err != nil && strings.Trim(string(out), " ") != "" {
-		res["avrdude"] = string(out)
-		if runtime.GOOS == "windows" {
-			cmd2 = "if"
-			sep = "\\"
-			assumePath = res["avrdude"] + sep + "avrdude.conf"
-			if out, err := exec.Command(cmd2, "EXIST", assumePath+" echo true").Output(); err != nil && strings.Trim(string(out), " ") != "true" {
-				res["conf"] = string(out)
-			} else {
-				log.Println("ERRRO", err)
-			}
+		assumePath := CutFilePathFromTail(CutFilePathFromTail(string(out), sep), sep)
+		if _, err := os.Stat(assumePath); !os.IsNotExist(err) {
+			res["include"] = assumePath + "\\avr\\include"
 		} else {
-			cmd2 = "/bin/sh"
-			sep = "/"
-			assumePath = res["avrdude"] + sep + "avrdude.conf"
-			if out, err := exec.Command(cmd2, "-c", "[ -f "+assumePath+" ] && echo true").Output(); err != nil && strings.Trim(string(out), " ") != "true" {
-				res["conf"] = string(out)
-			} else {
-				log.Println("ERRRO", err)
-			}
+			res["include"] = `program did not find AVR include directory😢, please specify it in vscode config`
+			return res, nil
 		}
 	} else {
-		log.Println("ERRRO", err)
+		return nil, err
 	}
-	log.Println(res)
-	return res
+	return res, nil
 }
-func cutFilePathFromTail(path string, sep string) string {
+func CutFilePathFromTail(path string, sep string) string {
+	path = strings.ReplaceAll(path, "\r", "")
+	path = strings.ReplaceAll(path, "\n", "")
 	index := strings.LastIndex(path, sep)
 	if index == -1 {
 		return path

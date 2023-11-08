@@ -11,10 +11,18 @@ import (
 )
 
 var wg sync.WaitGroup
+var errReport []string
 
 func (m Main) Init() tea.Cmd {
 	wg.Add(1)
-	go misc.Scan(&wg)
+	go func() {
+		defer wg.Done()
+		if scan, err := misc.Scan(); scan != nil {
+			m.scanResult = scan
+		} else {
+			errReport = append(errReport, "\n"+err.Error())
+		}
+	}()
 	return TickCmd()
 }
 func (m Main) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -46,6 +54,13 @@ func (m Main) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			if m.stage == GENERATING {
 				m.radio.Choice = models.Bool_choices[m.radio.Cursor]
+				if m.radio.Choice == "Yup" {
+					err := misc.Gen_CONFIG(misc.NewConfig(m.scanResult["avr-gcc"], m.scanResult["include"]))
+					if err != nil {
+						errReport = append(errReport, "\n"+err.Error())
+					}
+				}
+				m.stage = FINISH
 			}
 			return m, nil
 		case "down", "j":
@@ -98,15 +113,22 @@ func (m Main) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Main) View() string {
 	current := m.inputs[m.index]
 	// The header
-	s := "\nPress ESC or to quit.\n"
+	s := "\nPress ESC to quit.\n"
 	switch m.stage {
 	case LOADING:
 		s += misc.LoadingHandler(m.progress, ProgessBarPadding)
 	case SELECTION:
 		s += lipgloss.JoinVertical(lipgloss.Left, misc.CC, current.Question, current.Input.View())
 	case GENERATING:
+		err := misc.Gen_Makefile(m.keyParams)
+		if err != nil {
+			errReport = append(errReport, "\n"+err.Error())
+		}
 		s += lipgloss.JoinVertical(lipgloss.Left, misc.Confirmation(m.keyParams), m.radio.View())
+	case FINISH:
+		s += misc.Summary(errReport)
 	}
+
 	return s
 }
 func (m *Main) Next() {

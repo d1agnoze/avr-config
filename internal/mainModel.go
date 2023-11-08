@@ -22,14 +22,15 @@ const (
 
 // * Main begin here!!!
 type Main struct {
-	progress  progress.Model
-	stage     int //identifier for stages of the application
-	inputs    []models.AppInput
-	width     int
-	height    int
-	index     int
-	radio     models.Radio
-	keyParams misc.Template
+	progress   progress.Model
+	stage      int //identifier for stages of the application
+	inputs     []models.AppInput
+	width      int
+	height     int
+	index      int
+	radio      models.Radio
+	keyParams  misc.Template
+	scanResult map[string]string
 }
 
 func New(input []models.AppInput) *Main {
