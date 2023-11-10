@@ -18,12 +18,12 @@ func main() {
 	model := internal.New(inputs)
 
 	// ! log
-	// f, err := tea.LogToFile("/log/runtime.log", "debug")
-	// if err != nil {
-	// 	fmt.Println("fatal:", err)
-	// 	os.Exit(1)
-	// }
-	// defer f.Close()
+	f, err := tea.LogToFile("runtime.log", "debug")
+	if err != nil {
+		fmt.Println("fatal:", err)
+		os.Exit(1)
+	}
+	defer f.Close()
 	// !
 	p := tea.NewProgram(*model, tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {

@@ -1,4 +1,4 @@
-package misc_test
+package test_test
 
 import (
 	"avr-config/cmd/avr-conf/internal/misc"
@@ -36,7 +36,7 @@ func TestScan(t *testing.T) {
 
 }
 func TestDIR(t *testing.T) {
-	if _, err := os.Stat("./makefile"); os.IsNotExist(err) {
+	if _, err := os.Stat("../makefile"); os.IsNotExist(err) {
 		t.Errorf("file not found")
 	}
 }

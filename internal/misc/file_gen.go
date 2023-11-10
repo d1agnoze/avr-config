@@ -2,7 +2,10 @@ package misc
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"runtime"
+	"strings"
 )
 
 type config struct {
@@ -44,6 +47,11 @@ func createFile(path string, content string) error {
 	return err
 }
 func Gen_CONFIG(conf config) error {
+	log.Println(conf)
+	if runtime.GOOS == "windows" {
+		conf.lib = WindowsFileFormat(conf.lib)
+		conf.exe = WindowsFileFormat(conf.exe)
+	}
 	workspace := fmt.Sprintf(`
 	{
 		"configurations": [
@@ -69,4 +77,7 @@ func Gen_CONFIG(conf config) error {
 	`, conf.lib, conf.exe)
 	err := createFile(".vscode/c_cpp_properties.json", workspace)
 	return err
+}
+func WindowsFileFormat(path string) string {
+	return strings.ReplaceAll(path, "\\", "\\\\")
 }

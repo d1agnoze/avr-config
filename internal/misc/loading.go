@@ -8,11 +8,10 @@ import (
 )
 
 func LoadingHandler(m progress.Model, padding int) string {
-	s := "\nPress q to quit.\n"
 	aa := BB
 	var asciiStyle = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#6fc452")).MarginTop(0)
 	pad := strings.Repeat(" ", padding)
 	return asciiStyle.Render(aa) + "\n" +
 		pad + m.View() + "\n" +
-		pad + s
+		pad
 }

@@ -3,26 +3,15 @@ package internal
 import (
 	"avr-config/cmd/avr-conf/internal/misc"
 	"avr-config/cmd/avr-conf/internal/models"
-	"sync"
 
 	"github.com/charmbracelet/bubbles/progress"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
-var wg sync.WaitGroup
 var errReport []string
 
 func (m Main) Init() tea.Cmd {
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		if scan, err := misc.Scan(); scan != nil {
-			m.scanResult = scan
-		} else {
-			errReport = append(errReport, "\n"+err.Error())
-		}
-	}()
 	return TickCmd()
 }
 func (m Main) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -55,6 +44,11 @@ func (m Main) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.stage == GENERATING {
 				m.radio.Choice = models.Bool_choices[m.radio.Cursor]
 				if m.radio.Choice == "Yup" {
+					if scan, err := misc.Scan(); scan != nil {
+						m.scanResult = scan
+					} else {
+						errReport = append(errReport, "\n"+err.Error())
+					}
 					err := misc.Gen_CONFIG(misc.NewConfig(m.scanResult["avr-gcc"], m.scanResult["include"]))
 					if err != nil {
 						errReport = append(errReport, "\n"+err.Error())
@@ -92,7 +86,6 @@ func (m Main) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// ^ loop the loading screen
 	case TickMsg:
 		if m.progress.Percent() == 1.0 {
-			wg.Wait()
 			m.stage = SELECTION
 			return m, nil
 		}
@@ -128,7 +121,6 @@ func (m Main) View() string {
 	case FINISH:
 		s += misc.Summary(errReport)
 	}
-
 	return s
 }
 func (m *Main) Next() {
