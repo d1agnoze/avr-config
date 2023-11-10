@@ -2,7 +2,6 @@ package misc
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"runtime"
 	"strings"
@@ -47,7 +46,6 @@ func createFile(path string, content string) error {
 	return err
 }
 func Gen_CONFIG(conf config) error {
-	log.Println(conf)
 	if runtime.GOOS == "windows" {
 		conf.lib = WindowsFileFormat(conf.lib)
 		conf.exe = WindowsFileFormat(conf.exe)

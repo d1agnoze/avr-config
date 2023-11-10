@@ -17,14 +17,14 @@ func main() {
 	}
 	model := internal.New(inputs)
 
-	// ! log
-	f, err := tea.LogToFile("runtime.log", "debug")
-	if err != nil {
-		fmt.Println("fatal:", err)
-		os.Exit(1)
-	}
-	defer f.Close()
-	// !
+	// // ! log
+	// f, err := tea.LogToFile("runtime.log", "debug")
+	// if err != nil {
+	// 	fmt.Println("fatal:", err)
+	// 	os.Exit(1)
+	// }
+	// defer f.Close()
+	// // !
 	p := tea.NewProgram(*model, tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Hmmm, there's been an error: %v", err)
